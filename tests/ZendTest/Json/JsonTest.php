@@ -3,9 +3,8 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Json
  */
 
 namespace ZendTest\Json;
@@ -13,9 +12,6 @@ namespace ZendTest\Json;
 use Zend\Json;
 
 /**
- * @category   Zend
- * @package    Zend_JSON
- * @subpackage UnitTests
  * @group      Zend_JSON
  */
 class JsonTest extends \PHPUnit_Framework_TestCase
@@ -307,7 +303,7 @@ class JsonTest extends \PHPUnit_Framework_TestCase
         }
 
         $array = array();
-        foreach ((array)$value as $k => $v) {
+        foreach ((array) $value as $k => $v) {
             $array[$k] = $this->_toArray($v);
         }
         return $array;
@@ -557,7 +553,7 @@ class JsonTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Regression tests for Zend_JSON_Expr and mutliple keys with the same name.
+     * Regression tests for Zend\Json\Expr and multiple keys with the same name.
      *
      * @group ZF-4946
      */
@@ -565,12 +561,12 @@ class JsonTest extends \PHPUnit_Framework_TestCase
     {
         $data = array(
             0 => array(
-                "alpha" => new Json\Expr("function() {}"),
+                "alpha" => new Json\Expr("function () {}"),
                 "beta"  => "gamma",
             ),
             1 => array(
                 "alpha" => "gamma",
-                "beta"  => new Json\Expr("function() {}"),
+                "beta"  => new Json\Expr("function () {}"),
             ),
             2 => array(
                 "alpha" => "gamma",
@@ -580,13 +576,13 @@ class JsonTest extends \PHPUnit_Framework_TestCase
         $result = Json\Json::encode($data, false, array('enableJsonExprFinder' => true));
 
         $this->assertEquals(
-            '[{"alpha":function() {},"beta":"gamma"},{"alpha":"gamma","beta":function() {}},{"alpha":"gamma","beta":"gamma"}]',
+            '[{"alpha":function () {},"beta":"gamma"},{"alpha":"gamma","beta":function () {}},{"alpha":"gamma","beta":"gamma"}]',
             $result
         );
     }
 
     /**
-     * Regression tests for Zend_JSON_Expr and mutliple keys with the same name.
+     * Regression tests for Zend\Json\Expr and multiple keys with the same name.
      *
      * @group ZF-4946
      */
@@ -620,7 +616,7 @@ class JsonTest extends \PHPUnit_Framework_TestCase
 
         $data = array(
             0 => array(
-                "alpha" => new Json\Expr("function() {}"),
+                "alpha" => new Json\Expr("function () {}"),
                 "beta"  => "gamma",
             ),
         );
@@ -894,6 +890,19 @@ EOB;
         $this->assertSame($expected, $pretty);
     }
 
+    public function testPrettyPrintDoublequoteFollowingEscapedBackslashShouldNotBeTreatedAsEscaped()
+    {
+        $this->assertEquals(
+            "[\n\t1,\n\t\"\\\\\",\n\t3\n]",
+            Json\Json::prettyPrint(Json\Json::encode(array(1, '\\', 3)))
+        );
+
+        $this->assertEquals(
+            "{\n\t\"a\":\"\\\\\"\n}",
+           Json\Json::prettyPrint(Json\Json::encode(array('a' => '\\')))
+        );
+    }
+
     /**
      * @group ZF-11167
      */
@@ -1034,7 +1043,6 @@ class ZF11167_ToArrayToJsonClass extends ZF11167_ToArrayClass
 
 /**
  * ISSUE  ZF-4946
- *
  */
 class ToJSONWithExpr
 {

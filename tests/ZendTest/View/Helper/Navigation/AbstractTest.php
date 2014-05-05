@@ -3,9 +3,8 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_View
  */
 
 namespace ZendTest\View\Helper\Navigation;
@@ -25,9 +24,6 @@ use ZendTest\View\Helper\TestAsset;
 /**
  * Base class for navigation view helper tests
  *
- * @category   Zend
- * @package    Zend_View
- * @subpackage UnitTests
  * @group      Zend_View
  * @group      Zend_View_Helper
  */
@@ -57,14 +53,14 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
     /**
      * View helper
      *
-     * @var Zend\View\Helper\Navigation\AbstractHelper
+     * @var \Zend\View\Helper\Navigation\AbstractHelper
      */
     protected $_helper;
 
     /**
      * The first container in the config file (files/navigation.xml)
      *
-     * @var Zend_Navigation
+     * @var Navigation
      */
     protected $_nav1;
 

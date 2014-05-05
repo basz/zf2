@@ -3,25 +3,23 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_VersionTest.php
  */
+
+namespace ZendTest\Version;
 
 use Zend\Http;
 use Zend\Version\Version;
 
 /**
- * @category   Zend
- * @package    Zend_Version
- * @subpackage UnitTests
  * @group      Zend_Version
  */
-class Zend_VersionTest extends \PHPUnit_Framework_TestCase
+class VersionTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * Tests that version_compare() and its "proxy"
-     * Zend_Version::compareVersion() work as expected.
+     * Zend\Version\Version::compareVersion() work as expected.
      */
     public function testVersionCompare()
     {
@@ -44,7 +42,7 @@ class Zend_VersionTest extends \PHPUnit_Framework_TestCase
                             $this->assertSame(
                                 Version::compareVersion($ver),
                                 $expect,
-                                "For version '$ver' and Zend_Version::VERSION = '"
+                                "For version '$ver' and Zend\Version\Version::VERSION = '"
                                 . Version::VERSION . "': result=" . (Version::compareVersion($ver))
                                 . ', but expected ' . $expect);
                         }

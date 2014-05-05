@@ -3,9 +3,8 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Stdlib
  */
 
 namespace ZendTest\Stdlib;
@@ -32,9 +31,6 @@ use Zend\Stdlib\Hydrator\Strategy\SerializableStrategy;
 
 
 /**
- * @category   Zend
- * @package    Zend_Stdlib
- * @subpackage UnitTests
  * @group      Zend_Stdlib
  */
 class HydratorTest extends \PHPUnit_Framework_TestCase
@@ -369,7 +365,7 @@ class HydratorTest extends \PHPUnit_Framework_TestCase
         $hydrator = new ClassMethods(false);
         $datas = $hydrator->extract($this->classMethodsCamelCase);
         $hydrator->addFilter("exclude",
-            function($property) {
+            function ($property) {
                 list($class, $method) = explode('::', $property);
 
                 if ($method == 'getHasFoo') {
@@ -399,7 +395,7 @@ class HydratorTest extends \PHPUnit_Framework_TestCase
             $hydrator->extract($serializable)
         );
 
-        $hydrator->addFilter("foo", function($property) {
+        $hydrator->addFilter("foo", function ($property) {
                 if ($property == "foo") {
                     return false;
                 }
@@ -415,7 +411,7 @@ class HydratorTest extends \PHPUnit_Framework_TestCase
             $hydrator->extract($serializable)
         );
 
-        $hydrator->addFilter("len", function($property) {
+        $hydrator->addFilter("len", function ($property) {
                 if (strlen($property) !== 3) {
                     return false;
                 }

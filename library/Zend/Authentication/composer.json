@@ -6,6 +6,7 @@
         "zf2",
         "authentication"
     ],
+    "homepage": "https://github.com/zendframework/zf2",
     "autoload": {
         "psr-0": {
             "Zend\\Authentication\\": ""
@@ -13,7 +14,7 @@
     },
     "target-dir": "Zend/Authentication",
     "require": {
-        "php": ">=5.3.3",
+        "php": ">=5.3.23",
         "zendframework/zend-stdlib": "self.version"
     },
     "require-dev": {
@@ -36,8 +37,8 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "2.2-dev",
-            "dev-develop": "2.3-dev"
+            "dev-master": "2.3-dev",
+            "dev-develop": "2.4-dev"
         }
     }
 }

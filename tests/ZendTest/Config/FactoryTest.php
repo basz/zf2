@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -200,13 +200,12 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
 
         // build string line by line as we are trailing-whitespace sensitive.
         $expected = "<?php\n";
-        $expected .= "return array (\n";
-        $expected .= "  'test' => 'foo',\n";
-        $expected .= "  'bar' => \n";
-        $expected .= "  array (\n";
-        $expected .= "    0 => 'baz',\n";
-        $expected .= "    1 => 'foo',\n";
-        $expected .= "  ),\n";
+        $expected .= "return array(\n";
+        $expected .= "    'test' => 'foo',\n";
+        $expected .= "    'bar' => array(\n";
+        $expected .= "        0 => 'baz',\n";
+        $expected .= "        1 => 'foo',\n";
+        $expected .= "    ),\n";
         $expected .= ");\n";
 
         $this->assertEquals(true, $result);

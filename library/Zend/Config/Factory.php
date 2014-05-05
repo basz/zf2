@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -179,16 +179,16 @@ class Factory
             );
         }
 
-        if (!isset(self::$writerExtensions[$extension])) {
+        if (!isset(static::$writerExtensions[$extension])) {
             throw new Exception\RuntimeException(
                 "Unsupported config file extension: '.{$extension}' for writing."
             );
         }
 
-        $writer = self::$writerExtensions[$extension];
+        $writer = static::$writerExtensions[$extension];
         if (($writer instanceOf Writer\AbstractWriter) === false) {
             $writer = self::getWriterPluginManager()->get($writer);
-            self::$writerExtensions[$extension] = $writer;
+            static::$writerExtensions[$extension] = $writer;
         }
 
         if (is_object($config)) {
@@ -232,7 +232,7 @@ class Factory
      */
     public static function setWriterPluginManager(WriterPluginManager $writers)
     {
-        self::$writers = $writers;
+        static::$writers = $writers;
     }
 
     /**
@@ -294,6 +294,6 @@ class Factory
             ));
         }
 
-        self::$writerExtensions[$extension] = $writer;
+        static::$writerExtensions[$extension] = $writer;
     }
 }
