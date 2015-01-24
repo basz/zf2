@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -20,7 +20,6 @@ use Zend\Code\Reflection\FileReflection;
  */
 class FileGeneratorTest extends \PHPUnit_Framework_TestCase
 {
-
     public function testConstruction()
     {
         $file = new FileGenerator();
@@ -92,13 +91,10 @@ EOS;
 
         $this->assertEquals('Zend\Code\Generator\FileGenerator', get_class($fileGenerator));
         $this->assertEquals(1, count($fileGenerator->getClasses()));
-
     }
 
     public function testFromFileReflection()
     {
-        $this->markTestIncomplete('Some scanning capabilities are incomplete, including file DocBlock comment retrieval and method scanning');
-
         $file = __DIR__ . '/TestAsset/TestSampleSingleClass.php';
         require_once $file;
 
@@ -115,15 +111,10 @@ EOS;
  */
 
 
-
-/* Zend_Code_Generator_FileGenerator-ClassMarker: {ZendTest\Code\Generator\TestAsset\TestSampleSingleClass} */
-
-
 namespace ZendTest\Code\Generator\TestAsset;
 
 /**
  * class docblock
- *
  */
 class TestSampleSingleClass
 {
@@ -132,7 +123,6 @@ class TestSampleSingleClass
      * Enter description here...
      *
      * @return bool
-     *
      */
     public function someMethod()
     {
@@ -148,9 +138,13 @@ class TestSampleSingleClass
 
 
 EOS;
+
         $this->assertEquals($expectedOutput, $codeGenFileFromDisk->generate());
     }
 
+    /**
+     * @group test
+     */
     public function testFileLineEndingsAreAlwaysLineFeed()
     {
         $codeGenFile = FileGenerator::fromArray(array(
@@ -304,5 +298,97 @@ EOS;
         $expectedUses = array('ZendTest\Code\Generator\TestAsset\ClassWithNamespace');
 
         $this->assertEquals($expectedUses, $class->getUses());
+    }
+
+    /**
+     * @group 4747
+     */
+    public function testIssue4747FileGenerationWithAddedMethodIsCorrectlyFormatted()
+    {
+        $g = new \Zend\Code\Generator\FileGenerator();
+        $g = $g->fromReflectedFileName(__DIR__ . '/TestAsset/ClassWithUses.php');
+        $g->setFilename('/tmp/result_class.php');
+        $g->getClass()->addMethod('added');
+        $g->write();
+
+        $expected = <<<'CODE'
+<?php
+/**
+ * Zend Framework (http://framework.zend.com/)
+ *
+ * @link      http://github.com/zendframework/zf2 for the canonical source
+ * repository
+ * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc.
+ * (http://www.zend.com)
+ * @license   http://framework.zend.com/license/new-bsd New BSD License
+ */
+
+
+namespace ZendTest\Code\Generator\TestAsset;
+
+
+use ZendTest\Code\Generator\TestAsset\ClassWithNamespace;
+
+class ClassWithUses
+{
+
+    public function added()
+    {
+    }
+
+
+}
+
+
+CODE;
+        $actual = file_get_contents('/tmp/result_class.php');
+        $this->assertEquals($expected, $actual);
+    }
+
+    /**
+     * @group 4747
+     */
+    public function testCanAppendToBodyOfReflectedFile()
+    {
+        $g = new \Zend\Code\Generator\FileGenerator();
+        $g = $g->fromReflectedFileName(__DIR__ . '/TestAsset/ClassWithUses.php');
+        $g->setFilename('/tmp/result_class.php');
+        $g->getClass()->addMethod('added');
+        $g->setBody("\$foo->bar();");
+        $g->write();
+
+        $expected = <<<'CODE'
+<?php
+/**
+ * Zend Framework (http://framework.zend.com/)
+ *
+ * @link      http://github.com/zendframework/zf2 for the canonical source
+ * repository
+ * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc.
+ * (http://www.zend.com)
+ * @license   http://framework.zend.com/license/new-bsd New BSD License
+ */
+
+
+namespace ZendTest\Code\Generator\TestAsset;
+
+
+use ZendTest\Code\Generator\TestAsset\ClassWithNamespace;
+
+class ClassWithUses
+{
+
+    public function added()
+    {
+    }
+
+
+}
+
+
+$foo->bar();
+CODE;
+        $actual = file_get_contents('/tmp/result_class.php');
+        $this->assertEquals($expected, $actual);
     }
 }

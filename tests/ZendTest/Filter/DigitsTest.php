@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -90,7 +90,9 @@ class DigitsTest extends \PHPUnit_Framework_TestCase
             array(array(
                 'abc123',
                 'abc 123'
-            ))
+            )),
+            array(true),
+            array(false),
         );
     }
 
@@ -102,6 +104,6 @@ class DigitsTest extends \PHPUnit_Framework_TestCase
     {
         $filter = new DigitsFilter();
 
-        $this->assertEquals($input, $filter($input));
+        $this->assertSame($input, $filter($input));
     }
 }

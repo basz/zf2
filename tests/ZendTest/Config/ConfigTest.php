@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -108,7 +108,6 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 
         $this->leadingdot = array('.test' => 'dot-test');
         $this->invalidkey = array(' ' => 'test', ''=>'test2');
-
     }
 
     public function testLoadSingleSection()
@@ -147,7 +146,6 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         // create a new multi-level key
         $config->does = array('not'=> array('exist' => 'yet'));
         $this->assertEquals('yet', $config->does->not->exist);
-
     }
 
     public function testNoModifications()
@@ -293,7 +291,6 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         $value = $config->get('notthere', 'default');
         $this->assertTrue($value === 'default');
         $this->assertTrue($config->notThere === null);
-
     }
 
     public function testUnsetException()
@@ -320,7 +317,6 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 
         $this->assertFalse(isset($config->hostname));
         $this->assertFalse(isset($config->db->name));
-
     }
 
     public function testMerge()
@@ -371,7 +367,6 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 
         // config->replaceNumerical
         $this->assertSame(true, $configA->replaceNumerical);
-
     }
 
     public function testArrayAccess()
@@ -480,7 +475,6 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('override', $newConfig->key->nested, '$newConfig is not overridden');
         $this->assertEquals('parent', $parent->key->nested, '$parent has been overridden');
-
     }
 
     /**

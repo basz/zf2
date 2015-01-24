@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -216,7 +216,6 @@ class FactoryTest extends TestCase
         $this->assertInstanceOf('Zend\InputFilter\InputInterface', $input);
         $this->assertFalse($input->isRequired());
         $this->assertFalse($input->allowEmpty());
-
     }
 
     public function testFactoryWillCreateInputWithSuggestedAllowEmptyFlagAndImpliesRequiredFlag()
@@ -567,6 +566,13 @@ class FactoryTest extends TestCase
         $inputFilterManager = new InputFilterPluginManager();
         $factory = new Factory();
         $factory->setInputFilterManager($inputFilterManager);
+        $this->assertSame($inputFilterManager, $factory->getInputFilterManager());
+    }
+
+    public function testSetInputFilterManagerOnConstruct()
+    {
+        $inputFilterManager = new InputFilterPluginManager();
+        $factory = new Factory($inputFilterManager);
         $this->assertSame($inputFilterManager, $factory->getInputFilterManager());
     }
 

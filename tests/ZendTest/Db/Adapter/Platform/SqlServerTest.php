@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -138,5 +138,14 @@ class SqlServerTest extends \PHPUnit_Framework_TestCase
     {
         $driver = new Pdo(array('pdodriver' => 'sqlsrv'));
         $this->platform->setDriver($driver);
+    }
+
+    public function testPlatformQuotesNullByteCharacter()
+    {
+        $err = set_error_handler(function () {} );
+        $string = "1\0";
+        $value = $this->platform->quoteValue($string);
+        set_error_handler($err);
+        $this->assertEquals("'1\\000'", $value);
     }
 }

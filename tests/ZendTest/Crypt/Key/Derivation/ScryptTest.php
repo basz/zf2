@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -16,7 +16,6 @@ use Zend\Crypt\Key\Derivation\Scrypt;
  */
 class ScryptTest extends \PHPUnit_Framework_TestCase
 {
-
     protected static function getMethod($name)
     {
         $class = new \ReflectionClass('Zend\Crypt\Key\Derivation\Scrypt');
@@ -157,7 +156,7 @@ class ScryptTest extends \PHPUnit_Framework_TestCase
      */
     public function testScryptWrongR()
     {
-         $result = Scrypt::calc('test', 'salt', PHP_INT_MAX / 128, 4, 1, 64);
+        $result = Scrypt::calc('test', 'salt', PHP_INT_MAX / 128, 4, 1, 64);
     }
 
     /**

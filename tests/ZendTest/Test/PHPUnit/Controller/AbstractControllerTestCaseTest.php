@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 namespace ZendTest\Test\PHPUnit\Controller;
@@ -77,7 +77,7 @@ class AbstractControllerTestCaseTest extends AbstractHttpControllerTestCase
 
     public function testUseOfRouter()
     {
-       // default value
+        // default value
        $this->assertEquals(false, $this->useConsoleRequest);
     }
 
@@ -304,6 +304,16 @@ class AbstractControllerTestCaseTest extends AbstractHttpControllerTestCase
         $this->getRequest()->setContent('my content');
         $this->dispatch('/tests', 'PUT', array('a' => 1));
         $this->assertEquals('a=1', $this->getRequest()->getContent());
+    }
+
+    /**
+     * @group 6636
+     * @group 6637
+     */
+    public function testCanHandleMultidimensionalParams()
+    {
+        $this->dispatch('/tests', 'PUT', array('a' => array('b' => 1)));
+        $this->assertEquals('a[b]=1', urldecode($this->getRequest()->getContent()));
     }
 
     public function testAssertTemplateName()

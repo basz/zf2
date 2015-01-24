@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -184,6 +184,35 @@ class AnnotationBuilderTest extends TestCase
         $this->assertTrue($target->has('password'));
     }
 
+    /**
+     * @dataProvider provideOptionsAnnotationAndComposedObjectAnnotation
+     * @param string $childName
+     *
+     * @group 7108
+     */
+    public function testOptionsAnnotationAndComposedObjectAnnotation($childName)
+    {
+        $entity  = new TestAsset\Annotation\EntityUsingComposedObjectAndOptions();
+        $builder = new Annotation\AnnotationBuilder();
+        $form    = $builder->createForm($entity);
+
+        $child = $form->get($childName);
+
+        $target = $child->getTargetElement();
+        $this->assertInstanceOf('Zend\Form\FieldsetInterface', $target);
+        $this->assertEquals('My label', $child->getLabel());
+    }
+
+    /**
+     * Data provider
+     *
+     * @return string[][]
+     */
+    public function provideOptionsAnnotationAndComposedObjectAnnotation()
+    {
+        return array(array('child'), array('childTheSecond'));
+    }
+
     public function testCanHandleOptionsAnnotation()
     {
         $entity  = new TestAsset\Annotation\EntityUsingOptions();
@@ -273,6 +302,5 @@ class AnnotationBuilderTest extends TestCase
         ) {
             $this->assertInstanceOf($expectedInstance, $inputFilter->get('input'));
         }
-
     }
 }

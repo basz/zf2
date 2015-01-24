@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -59,7 +59,6 @@ class UpdateTest extends \PHPUnit_Framework_TestCase
     {
         $update = new Update('foo');
         $this->assertEquals('foo', $this->readAttribute($update, 'table'));
-
     }
 
     /**
@@ -68,7 +67,28 @@ class UpdateTest extends \PHPUnit_Framework_TestCase
     public function testSet()
     {
         $this->update->set(array('foo' => 'bar'));
-        $this->assertEquals(array('foo' => 'bar'), $this->readAttribute($this->update, 'set'));
+        $this->assertEquals(array('foo' => 'bar'), $this->update->getRawState('set'));
+    }
+
+    /**
+     * @covers Zend\Db\Sql\Update::set
+     */
+    public function testSortableSet()
+    {
+        $this->update->set(array(
+            'two'   => 'с_two',
+            'three' => 'с_three',
+        ));
+        $this->update->set(array('one' => 'с_one'), 10);
+
+        $this->assertEquals(
+            array(
+                'one'   => 'с_one',
+                'two'   => 'с_two',
+                'three' => 'с_three',
+            ),
+            $this->update->getRawState('set')
+        );
     }
 
     /**
@@ -212,6 +232,19 @@ class UpdateTest extends \PHPUnit_Framework_TestCase
             ->where('x = y');
 
         $this->assertEquals('UPDATE "sch"."foo" SET "bar" = \'baz\', "boo" = NOW(), "bam" = NULL WHERE x = y', $this->update->getSqlString(new TrustingSql92Platform()));
+    }
+
+    /**
+     * @group 6768
+     * @group 6773
+     */
+    public function testGetSqlStringForFalseUpdateValueParameter()
+    {
+        $this->update = new Update;
+        $this->update->table(new TableIdentifier('foo', 'sch'))
+            ->set(array('bar' => false, 'boo' => 'test', 'bam' => true))
+            ->where('x = y');
+        $this->assertEquals('UPDATE "sch"."foo" SET "bar" = \'\', "boo" = \'test\', "bam" = \'1\' WHERE x = y', $this->update->getSqlString(new TrustingSql92Platform()));
     }
 
     /**

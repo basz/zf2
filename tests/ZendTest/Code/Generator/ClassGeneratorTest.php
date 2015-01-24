@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -21,7 +21,6 @@ use Zend\Code\Reflection\ClassReflection;
  */
 class ClassGeneratorTest extends \PHPUnit_Framework_TestCase
 {
-
     public function testConstruction()
     {
         $class = new ClassGenerator();
@@ -452,8 +451,6 @@ CODE;
         $this->assertNotContains('publicClassProperty', $code);
         $this->assertNotContains('protectedClassProperty', $code);
         $this->assertNotContains('privateClassProperty', $code);
-
-
     }
 
     public function testHasMethodInsensitive()
@@ -497,4 +494,41 @@ CODE;
         $this->assertEquals($expected, $output);
     }
 
+    /**
+     * @group 6253
+     */
+    public function testHereDoc()
+    {
+        $reflector = new ClassReflection('ZendTest\Code\Generator\TestAsset\TestClassWithHeredoc');
+        $classGenerator = new ClassGenerator();
+        $methods = $reflector->getMethods();
+        $classGenerator->setName("OutputClass");
+
+        foreach ($methods as $method) {
+            $methodGenerator = MethodGenerator::fromReflection($method);
+
+            $classGenerator->addMethodFromGenerator($methodGenerator);
+        }
+
+        $contents = <<< 'CODE'
+class OutputClass
+{
+
+    public function someFunction()
+    {
+        $output = <<< END
+
+                Fix it, fix it!
+                Fix it, fix it!
+                Fix it, fix it!
+END;
+    }
+
+
+}
+
+CODE;
+
+        $this->assertEquals($contents, $classGenerator->generate());
+    }
 }

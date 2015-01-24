@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -90,6 +90,11 @@ class UploadFileTest extends \PHPUnit_Framework_TestCase
 
         $this->assertFalse($validator->isValid(''));
         $this->assertArrayHasKey(File\UploadFile::FILE_NOT_FOUND, $validator->getMessages());
+    }
+
+    public function testUploadErrorCodeShouldPrecedeEmptyFileCheck()
+    {
+        $validator = new File\UploadFile();
 
         $filesArray = array(
             'name'      => '',
@@ -100,6 +105,7 @@ class UploadFileTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->assertFalse($validator->isValid($filesArray));
-        $this->assertArrayHasKey(File\UploadFile::FILE_NOT_FOUND, $validator->getMessages());
+        $this->assertArrayHasKey(File\UploadFile::NO_FILE, $validator->getMessages());
+        $this->assertArrayNotHasKey(File\UploadFile::FILE_NOT_FOUND, $validator->getMessages());
     }
 }

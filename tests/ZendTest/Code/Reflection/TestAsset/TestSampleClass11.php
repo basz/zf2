@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -49,4 +49,37 @@ class TestSampleClass11
     {
         return 'visibility';
     }
+
+    function getCacheKey() {
+        $args = func_get_args();
+ 
+        $cacheKey = '';
+ 
+        foreach($args as $arg) {
+            if (is_array($arg)) {
+                foreach ($arg as $argElement) {
+                    $cacheKey = hash("sha256", $cacheKey.$argElement);
+                }
+            }
+            else {
+                $cacheKey = hash("sha256", $cacheKey.$arg);
+            }
+            //blah
+        }
+ 
+        return $cacheKey;
+    }
+ 
+//    //TODO - would it be better to define the binding like this?
+//    function __prototype() {
+//        $cacheKey = $this->getCacheKey($queryString);
+//        $cachedValue = $this->cache->get($cacheKey);
+//
+//        if ($cachedValue) {
+//            return $cachedValue;
+//        }
+//        $result = parent::__prototype();
+//        $this->cache->put($cacheKey, $result);
+//        return $result;
+//    }    
 }

@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -21,7 +21,6 @@ use Zend\Http\Client;
  */
 class StaticClientTest extends \PHPUnit_Framework_TestCase
 {
-
     /**
      * Uri for test
      *
@@ -36,10 +35,10 @@ class StaticClientTest extends \PHPUnit_Framework_TestCase
     {
         if (defined('TESTS_ZEND_HTTP_CLIENT_BASEURI')
             && (TESTS_ZEND_HTTP_CLIENT_BASEURI != false)) {
-
             $this->baseuri = TESTS_ZEND_HTTP_CLIENT_BASEURI;
-            if (substr($this->baseuri, -1) != '/') $this->baseuri .= '/';
-
+            if (substr($this->baseuri, -1) != '/') {
+                $this->baseuri .= '/';
+            }
         } else {
             // Skip tests
             $this->markTestSkipped("Zend_Http_Client dynamic tests are not enabled in TestConfiguration.php");

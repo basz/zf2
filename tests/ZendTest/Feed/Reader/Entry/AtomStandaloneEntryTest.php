@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -18,7 +18,6 @@ use Zend\Feed\Reader;
 */
 class AtomStandaloneEntryTest extends \PHPUnit_Framework_TestCase
 {
-
     protected $feedSamplePath = null;
 
     protected $expectedCats = array();
@@ -90,7 +89,7 @@ class AtomStandaloneEntryTest extends \PHPUnit_Framework_TestCase
         $entry = Reader\Reader::importString(
             file_get_contents($this->feedSamplePath . '/datecreated/atom10.xml')
         );
-        $edate = DateTime::createFromFormat(DateTime::ISO8601, '2009-03-07T08:03:50Z');
+        $edate = DateTime::createFromFormat(DateTime::ATOM, '2009-03-07T08:03:50Z');
         $this->assertEquals($edate, $entry->getDateCreated());
     }
 
@@ -103,7 +102,7 @@ class AtomStandaloneEntryTest extends \PHPUnit_Framework_TestCase
         $entry = Reader\Reader::importString(
             file_get_contents($this->feedSamplePath . '/datemodified/atom10.xml')
         );
-        $edate = DateTime::createFromFormat(DateTime::ISO8601, '2009-03-07T08:03:50Z');
+        $edate = DateTime::createFromFormat(DateTime::ATOM, '2009-03-07T08:03:50Z');
         $this->assertEquals($edate, $entry->getDateModified());
     }
 
@@ -267,5 +266,4 @@ class AtomStandaloneEntryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->expectedCats, (array) $entry->getCategories());
         $this->assertEquals(array('topic1','Cat & Dog'), array_values($entry->getCategories()->getValues()));
     }
-
 }

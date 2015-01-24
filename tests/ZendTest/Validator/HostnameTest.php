@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -23,11 +23,16 @@ class HostnameTest extends \PHPUnit_Framework_TestCase
      */
     protected $validator;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     protected $origEncoding;
+
     public function setUp()
     {
-        $this->origEncoding = iconv_get_encoding('internal_encoding');
+        $this->origEncoding = PHP_VERSION_ID < 50600
+            ? iconv_get_encoding('internal_encoding')
+            : ini_get('default_charset');
         $this->validator = new Hostname();
     }
 
@@ -36,7 +41,11 @@ class HostnameTest extends \PHPUnit_Framework_TestCase
      */
     public function tearDown()
     {
-        iconv_set_encoding('internal_encoding', $this->origEncoding);
+        if (PHP_VERSION_ID < 50600) {
+            iconv_set_encoding('internal_encoding', $this->origEncoding);
+        } else {
+            ini_set('default_charset', $this->origEncoding);
+        }
     }
 
     /**
@@ -49,7 +58,7 @@ class HostnameTest extends \PHPUnit_Framework_TestCase
         $valuesExpected = array(
             array(Hostname::ALLOW_IP, true, array('1.2.3.4', '10.0.0.1', '255.255.255.255')),
             array(Hostname::ALLOW_IP, false, array('1.2.3.4.5', '0.0.0.256')),
-            array(Hostname::ALLOW_DNS, true, array('example.com', 'example.museum', 'd.hatena.ne.jp')),
+            array(Hostname::ALLOW_DNS, true, array('example.com', 'example.museum', 'd.hatena.ne.jp', 'example.photography')),
             array(Hostname::ALLOW_DNS, false, array('localhost', 'localhost.localdomain', '1.2.3.4', 'domain.invalid')),
             array(Hostname::ALLOW_LOCAL, true, array('localhost', 'localhost.localdomain', 'example.com')),
             array(Hostname::ALLOW_ALL, true, array('localhost', 'example.com', '1.2.3.4')),
@@ -345,7 +354,12 @@ class HostnameTest extends \PHPUnit_Framework_TestCase
      */
     public function testDifferentIconvEncoding()
     {
-        iconv_set_encoding('internal_encoding', 'ISO8859-1');
+        if (PHP_VERSION_ID < 50600) {
+            iconv_set_encoding('internal_encoding', 'ISO8859-1');
+        } else {
+            ini_set('default_charset', 'ISO8859-1');
+        }
+
         $validator = new Hostname();
 
         $valuesExpected = array(

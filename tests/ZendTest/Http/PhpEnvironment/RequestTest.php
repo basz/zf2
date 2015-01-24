@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -247,10 +247,31 @@ class RequestTest extends TestCase
             ),
             array(
                 array(
+                    'HTTP_CUSTOM_COUNT'     => '0',
+                ),
+                'Custom-Count',
+                '0'
+            ),
+            array(
+                array(
                     'CONTENT_TYPE'     => 'text/html',
                 ),
                 'Content-Type',
                 'text/html'
+            ),
+            array(
+                array(
+                    'CONTENT_LENGTH'     => 0,
+                ),
+                'Content-Length',
+                0
+            ),
+            array(
+                array(
+                    'CONTENT_LENGTH'     => 0,
+                ),
+                'Content-Length',
+                0
             ),
             array(
                 array(
@@ -738,5 +759,17 @@ class RequestTest extends TestCase
         $server->set('SCRIPT_FILENAME', null);
 
         $this->assertEquals('', $request->getBaseUrl());
+    }
+
+    /**
+     * @group 6896
+     */
+    public function testHandlesUppercaseHttpsFlags()
+    {
+        $_SERVER['HTTPS'] = 'OFF';
+
+        $request = new Request();
+
+        $this->assertSame('http', $request->getUri()->getScheme());
     }
 }

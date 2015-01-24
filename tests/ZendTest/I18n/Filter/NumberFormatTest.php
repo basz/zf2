@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -100,7 +100,7 @@ class NumberFormatTest extends TestCase
                 NumberFormatter::DEFAULT_STYLE,
                 NumberFormatter::TYPE_DOUBLE,
                 1234567.8912346,
-                '1 234 567,891'
+                '1 234 567,891'
             ),
         );
     }
@@ -161,6 +161,6 @@ class NumberFormatTest extends TestCase
     {
         $filter = new NumberFormatFilter('de_AT', NumberFormatter::DEFAULT_STYLE, NumberFormatter::TYPE_DOUBLE);
 
-        $this->assertEquals($input,  $filter->filter($input));
+        $this->assertEquals($input, $filter->filter($input));
     }
 }

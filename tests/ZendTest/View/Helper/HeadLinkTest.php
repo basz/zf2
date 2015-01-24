@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -303,11 +303,13 @@ class HeadLinkTest extends \PHPUnit_Framework_TestCase
         try {
             $this->helper->setAlternate('foo');
             $this->fail('Setting alternate with fewer than 3 args should raise exception');
-        } catch (ViewException $e) { }
+        } catch (ViewException $e) {
+        }
         try {
             $this->helper->setAlternate('foo', 'bar');
             $this->fail('Setting alternate with fewer than 3 args should raise exception');
-        } catch (ViewException $e) { }
+        } catch (ViewException $e) {
+        }
     }
 
     public function testIndentationIsHonored()
@@ -433,5 +435,14 @@ class HeadLinkTest extends \PHPUnit_Framework_TestCase
     {
         $this->helper->appendStylesheet(array('href' => '/bar/baz', 'id' => 'foo'));
         $this->assertContains('id="foo"', $this->helper->toString());
+    }
+
+    /**
+     * @group 6635
+     */
+    public function testSizesAttributeIsSupported()
+    {
+        $this->helper->appendStylesheet(array('rel' => 'icon', 'href' => '/bar/baz', 'sizes' => '123x456'));
+        $this->assertContains('sizes="123x456"', $this->helper->toString());
     }
 }

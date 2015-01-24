@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -310,5 +310,20 @@ class InputTest extends TestCase
         $input2 = new Input('bar');
         $input2->merge($input);
         $this->assertTrue($input2->continueIfEmpty());
+    }
+
+    public function testMergeRetainsAllowEmptyFlag()
+    {
+        $input = new Input('foo');
+        $input->setRequired(true);
+        $input->setAllowEmpty(true);
+
+        $input2 = new Input('bar');
+        $input2->setRequired(true);
+        $input2->setAllowEmpty(false);
+        $input2->merge($input);
+
+        $this->assertTrue($input2->isRequired());
+        $this->assertTrue($input2->allowEmpty());
     }
 }

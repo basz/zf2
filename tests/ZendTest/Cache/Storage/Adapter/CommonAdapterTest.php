@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -31,7 +31,6 @@ use Zend\Stdlib\ErrorHandler;
  */
 abstract class CommonAdapterTest extends \PHPUnit_Framework_TestCase
 {
-
     /**
      * The storage adapter
      *
@@ -225,6 +224,8 @@ abstract class CommonAdapterTest extends \PHPUnit_Framework_TestCase
         $ttl = $capabilities->getTtlPrecision();
         $this->_options->setTtl($ttl);
 
+        $this->waitForFullSecond();
+
         $this->assertTrue($this->_storage->setItem('key', 'value'));
 
         // wait until the item expired
@@ -299,6 +300,8 @@ abstract class CommonAdapterTest extends \PHPUnit_Framework_TestCase
 
         $ttl = $capabilities->getTtlPrecision();
         $this->_options->setTtl($ttl);
+
+        $this->waitForFullSecond();
 
         $this->_storage->setItem('key', 'value');
 
@@ -543,6 +546,8 @@ abstract class CommonAdapterTest extends \PHPUnit_Framework_TestCase
         $ttl = $capabilities->getTtlPrecision();
         $this->_options->setTtl($ttl);
 
+        $this->waitForFullSecond();
+
         $this->_storage->setItem('key', 'value');
 
         // wait until expired
@@ -573,33 +578,53 @@ abstract class CommonAdapterTest extends \PHPUnit_Framework_TestCase
             $this->markTestSkipped("Adapter doesn't support item expiration");
         }
 
+        // item definition
+        $itemsHigh = array(
+            'keyHigh1' => 'valueHigh1',
+            'keyHigh2' => 'valueHigh2',
+            'keyHigh3' => 'valueHigh3'
+        );
+        $itemsLow = array(
+            'keyLow1' => 'valueLow1',
+            'keyLow2' => 'valueLow2',
+            'keyLow3' => 'valueLow3'
+        );
+        $items = $itemsHigh + $itemsLow;
+
+        // set items with high TTL
+        $this->_options->setTtl(123456);
+        $this->assertSame(array(), $this->_storage->setItems($itemsHigh));
+
+        // set items with low TTL
         $ttl = $capabilities->getTtlPrecision();
         $this->_options->setTtl($ttl);
-
-        $items = array(
-            'key1' => 'value1',
-            'key2' => 'value2',
-            'key3' => 'value3'
-        );
-        $this->assertSame(array(), $this->_storage->setItems($items));
+        $this->waitForFullSecond();
+        $this->assertSame(array(), $this->_storage->setItems($itemsLow));
 
         // wait until expired
         $wait = $ttl + $capabilities->getTtlPrecision();
         usleep($wait * 2000000);
 
         $rs = $this->_storage->getItems(array_keys($items));
-        if (!$capabilities->getUseRequestTime()) {
-            $this->assertEquals(array(), $rs);
-        } else {
-            ksort($rs);
-            $this->assertEquals($items, $rs);
-        }
+        ksort($rs); // make comparable
 
-        $this->_options->setTtl(0);
         if ($capabilities->getExpiredRead()) {
+            // if item expiration will be done on read there is no difference
+            // between the previos set items in TTL.
+            // -> all items will be expired
+            $this->assertEquals(array(), $rs);
+
+            // after disabling TTL all items will be available
+            $this->_options->setTtl(0);
             $rs = $this->_storage->getItems(array_keys($items));
-            ksort($rs);
+            ksort($rs); // make comparable
             $this->assertEquals($items, $rs);
+        } elseif ($capabilities->getUseRequestTime()) {
+            // if the request time will be used as current time all items will
+            // be available as expiration doesn't work within the same process
+            $this->assertEquals($items, $rs);
+        } else {
+            $this->assertEquals($itemsHigh, $rs);
         }
     }
 
@@ -742,9 +767,9 @@ abstract class CommonAdapterTest extends \PHPUnit_Framework_TestCase
 
     public function testIncrementItem()
     {
-       $this->assertTrue($this->_storage->setItem('counter', 10));
-       $this->assertEquals(15, $this->_storage->incrementItem('counter', 5));
-       $this->assertEquals(15, $this->_storage->getItem('counter'));
+        $this->assertTrue($this->_storage->setItem('counter', 10));
+        $this->assertEquals(15, $this->_storage->incrementItem('counter', 5));
+        $this->assertEquals(15, $this->_storage->getItem('counter'));
     }
 
     public function testIncrementItemInitialValue()
@@ -789,9 +814,9 @@ abstract class CommonAdapterTest extends \PHPUnit_Framework_TestCase
 
     public function testDecrementItem()
     {
-       $this->assertTrue($this->_storage->setItem('counter', 30));
-       $this->assertEquals(25, $this->_storage->decrementItem('counter', 5));
-       $this->assertEquals(25, $this->_storage->getItem('counter'));
+        $this->assertTrue($this->_storage->setItem('counter', 30));
+        $this->assertEquals(25, $this->_storage->decrementItem('counter', 5));
+        $this->assertEquals(25, $this->_storage->getItem('counter'));
     }
 
     public function testDecrementItemInitialValue()
@@ -827,6 +852,8 @@ abstract class CommonAdapterTest extends \PHPUnit_Framework_TestCase
         }
 
         $this->_options->setTtl(2 * $capabilities->getTtlPrecision());
+
+        $this->waitForFullSecond();
 
         $this->assertTrue($this->_storage->setItem('key', 'value'));
 
@@ -1000,6 +1027,8 @@ abstract class CommonAdapterTest extends \PHPUnit_Framework_TestCase
         $ttl = $capabilities->getTtlPrecision();
         $this->_options->setTtl($ttl);
 
+        $this->waitForFullSecond();
+
         $this->assertTrue($this->_storage->setItem('key1', 'value1'));
 
         // wait until the first item expired
@@ -1025,6 +1054,7 @@ abstract class CommonAdapterTest extends \PHPUnit_Framework_TestCase
             $this->markTestSkipped("Storage doesn't implement TaggableInterface");
         }
 
+        // store 3 items and register the current default namespace
         $this->assertSame(array(), $this->_storage->setItems(array(
             'key1' => 'value1',
             'key2' => 'value2',
@@ -1061,6 +1091,20 @@ abstract class CommonAdapterTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($this->_storage->hasItem('key3'));
     }
 
+    /**
+     * @group 6878
+     */
+    public function testTaggableFunctionsOnEmptyStorage()
+    {
+        if (!($this->_storage instanceof TaggableInterface)) {
+            $this->markTestSkipped("Storage doesn't implement TaggableInterface");
+        }
+
+        $this->assertFalse($this->_storage->setTags('unknown', array('no')));
+        $this->assertFalse($this->_storage->getTags('unknown'));
+        $this->assertTrue($this->_storage->clearByTags(array('unknown')));
+    }
+
     public function testGetTotalSpace()
     {
         if (!($this->_storage instanceof TotalSpaceCapableInterface)) {
@@ -1089,5 +1133,15 @@ abstract class CommonAdapterTest extends \PHPUnit_Framework_TestCase
             $totalSpace = $this->_storage->getTotalSpace();
             $this->assertLessThanOrEqual($totalSpace, $availableSpace);
         }
+    }
+
+    /**
+     * This will wait for a full second started
+     * to reduce test failures on high load servers
+     * @see https://github.com/zendframework/zf2/issues/5144
+     */
+    protected function waitForFullSecond()
+    {
+        usleep((microtime(true)-time()) * 1000000);
     }
 }

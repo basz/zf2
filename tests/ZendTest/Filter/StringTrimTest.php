@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -13,7 +13,7 @@ use Zend\Filter\StringTrim;
 use stdClass;
 
 /**
- * @group      Zend_Filter
+ * @covers \Zend\Filter\StringTrim
  */
 class StringTrimTest extends \PHPUnit_Framework_TestCase
 {
@@ -156,5 +156,20 @@ class StringTrimTest extends \PHPUnit_Framework_TestCase
     {
         $filtered = $this->_filter->filter($value);
         $this->assertSame($value, $filtered);
+    }
+
+    /**
+     * Ensures expected behavior with '0' as character list
+     *
+     * @group 6261
+     */
+    public function testEmptyCharList()
+    {
+        $filter = $this->_filter;
+        $filter->setCharList('0');
+        $this->assertEquals('a0b', $filter('00a0b00'));
+
+        $filter->setCharList('');
+        $this->assertEquals('str', $filter(' str '));
     }
 }
